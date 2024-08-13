@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  cpu-benchmark:
+    build: ./cpu-benchmark
+    environment:
+      - CPU_LOAD=${CPU_LOAD}
+      - DURATION=${CPU_DURATION}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+
+  memory-benchmark:
+    build: ./memory-benchmark
+    environment:
+      - MEMORY_LOAD=${MEMORY_LOAD}
+      - DURATION=${MEMORY_DURATION}
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  network-server:
+    build: ./network-benchmark
+    command: /server.sh
+
+  network-client:
+    build: ./network-benchmark
+    command: /client.sh
+    environment:
+      - SERVER_IP=${SERVER_IP}
+      - DURATION=${NETWORK_DURATION}
+
+  coordinator:
+    build: ./coordinator
+    depends_on:
+      - cpu-benchmark
+      - memory-benchmark
+      - network-server
+      - network-client
