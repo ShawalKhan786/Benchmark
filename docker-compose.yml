@@ -11,6 +11,10 @@ services:
         limits:
           cpus: '1.0'
           memory: 512M
+    depends_on:
+      - coordinator  # Ensure the coordinator is up before starting
+    networks:
+      - benchmarking
 
   memory-benchmark:
     build: ./memory-benchmark
@@ -22,22 +26,40 @@ services:
         limits:
           cpus: '1.0'
           memory: 1G
+    depends_on:
+      - coordinator  # Ensure the coordinator is up before starting
+    networks:
+      - benchmarking
 
   network-server:
     build: ./network-benchmark
     command: /server.sh
+    ports:
+      - "5201:5201"
+    networks:
+      - benchmarking
 
   network-client:
     build: ./network-benchmark
     command: /client.sh
     environment:
-      - SERVER_IP=${SERVER_IP}
+      - SERVER_IP=network-server
       - DURATION=${NETWORK_DURATION}
+    depends_on:
+      - network-server
+      - coordinator  # Ensure the coordinator is up before starting
+    networks:
+      - benchmarking
 
   coordinator:
     build: ./coordinator
-    depends_on:
-      - cpu-benchmark
-      - memory-benchmark
-      - network-server
-      - network-client
+    ports:
+      - "8080:8080"
+    networks:
+      - benchmarking
+    volumes:
+      - ./results:/results  # Ensure results are saved on the host
+
+networks:
+  benchmarking:
+    driver: bridge

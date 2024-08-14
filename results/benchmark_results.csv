@@ -1,0 +1,4 @@
+Benchmark Type,CPU Load (%),Memory Usage (MB),Network Throughput (Mbps),Intra-Container Latency (ms),Inter-Container Communication Latency (ms),Core Used,Duration (s)
+CPU Benchmark,,-,-,-,-,,60
+Memory Benchmark,-,,-,-,-,,60
+Network Benchmark,-,-,,,,,60
