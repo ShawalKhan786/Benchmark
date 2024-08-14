@@ -1,4 +1,77 @@
-Benchmark Type,CPU Load (%),Memory Usage (MB),Network Throughput (Mbps),Intra-Container Latency (ms),Inter-Container Communication Latency (ms),Core Used,Duration (s)
-CPU Benchmark,,-,-,-,-,,60
-Memory Benchmark,-,,-,-,-,,60
-Network Benchmark,-,-,,,,,60
+Benchmark Type,Result
+cpu,"stress-ng: info:  [8] dispatching hogs: 80 cpu
+stress-ng: info:  [8] successful run completed in 64.45s (1 min, 4.45 secs)
+stress-ng: info:  [8] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s
+stress-ng: info:  [8]                           (secs)    (secs)    (secs)   (real time) (usr+sys time)
+stress-ng: info:  [8] cpu               18565     61.41     58.88      4.24       302.33         294.12"
+memory,"stress-ng: info:  [8] dispatching hogs: 1 vm
+stress-ng: info:  [8] successful run completed in 60.56s (1 min, 0.56 secs)"
+network,"Connecting to host network-server, port 5201
+[  5] local 172.27.0.4 port 43562 connected to 172.27.0.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec  1.90 GBytes  16.3 Gbits/sec  1115   1.99 MBytes       
+[  5]   1.00-2.00   sec  1.83 GBytes  15.7 Gbits/sec  1185    820 KBytes       
+[  5]   2.00-3.00   sec  1.76 GBytes  15.2 Gbits/sec   95    986 KBytes       
+[  5]   3.00-4.00   sec  2.00 GBytes  17.2 Gbits/sec  758    919 KBytes       
+[  5]   4.00-5.00   sec  2.90 GBytes  24.9 Gbits/sec  2480    918 KBytes       
+[  5]   5.00-6.00   sec  2.09 GBytes  18.0 Gbits/sec  766   1.09 MBytes       
+[  5]   6.00-7.00   sec  2.18 GBytes  18.8 Gbits/sec  495   1.11 MBytes       
+[  5]   7.00-8.00   sec  2.87 GBytes  24.6 Gbits/sec  1453   1.05 MBytes       
+[  5]   8.00-9.00   sec  2.28 GBytes  19.5 Gbits/sec   50   1.08 MBytes       
+[  5]   9.00-10.00  sec  2.86 GBytes  24.6 Gbits/sec    4   1.08 MBytes       
+[  5]  10.00-11.00  sec  2.59 GBytes  22.2 Gbits/sec  455   1.15 MBytes       
+[  5]  11.00-12.00  sec  3.97 GBytes  34.1 Gbits/sec    0   1.15 MBytes       
+[  5]  12.00-13.00  sec  3.61 GBytes  31.1 Gbits/sec  705   1.12 MBytes       
+[  5]  13.00-14.00  sec  2.54 GBytes  21.8 Gbits/sec    3   1.03 MBytes       
+[  5]  14.00-15.00  sec  3.74 GBytes  32.2 Gbits/sec  1141   1.02 MBytes       
+[  5]  15.00-16.00  sec  5.21 GBytes  44.8 Gbits/sec    0   1.22 MBytes       
+[  5]  16.00-17.00  sec  4.62 GBytes  39.7 Gbits/sec    2   1.45 MBytes       
+[  5]  17.00-18.00  sec  4.85 GBytes  41.6 Gbits/sec    0   1.59 MBytes       
+[  5]  18.00-19.00  sec  5.81 GBytes  49.9 Gbits/sec  266   1.26 MBytes       
+[  5]  19.00-20.00  sec  5.65 GBytes  48.5 Gbits/sec    1   1.41 MBytes       
+[  5]  20.00-21.00  sec  5.70 GBytes  48.9 Gbits/sec    0   1.77 MBytes       
+[  5]  21.00-22.00  sec  6.10 GBytes  52.4 Gbits/sec    0   1.88 MBytes       
+[  5]  22.00-23.00  sec  5.91 GBytes  50.7 Gbits/sec    0   1.94 MBytes       
+[  5]  23.00-24.00  sec  5.55 GBytes  47.7 Gbits/sec    0   2.06 MBytes       
+[  5]  24.00-25.00  sec  5.46 GBytes  46.9 Gbits/sec    0   2.25 MBytes       
+[  5]  25.00-26.00  sec  5.86 GBytes  50.2 Gbits/sec   46   2.28 MBytes       
+[  5]  26.00-27.00  sec  6.07 GBytes  52.3 Gbits/sec    0   2.36 MBytes       
+[  5]  27.00-28.00  sec  4.76 GBytes  40.8 Gbits/sec    0   2.53 MBytes       
+[  5]  28.00-29.00  sec  5.22 GBytes  45.0 Gbits/sec    2   2.59 MBytes       
+[  5]  29.00-30.00  sec  4.89 GBytes  42.0 Gbits/sec    1   1.97 MBytes       
+[  5]  30.00-31.00  sec  4.83 GBytes  41.5 Gbits/sec  562   1.98 MBytes       
+[  5]  31.00-32.00  sec  5.04 GBytes  43.3 Gbits/sec    0   1.99 MBytes       
+[  5]  32.00-33.00  sec  4.45 GBytes  38.3 Gbits/sec    1   1.42 MBytes       
+[  5]  33.00-34.00  sec  3.97 GBytes  34.1 Gbits/sec   57   1.54 MBytes       
+[  5]  34.00-35.00  sec  3.95 GBytes  34.0 Gbits/sec    3   1.56 MBytes       
+[  5]  35.00-36.00  sec  3.80 GBytes  32.6 Gbits/sec    0   1.57 MBytes       
+[  5]  36.00-37.00  sec  5.03 GBytes  43.2 Gbits/sec    0   1.57 MBytes       
+[  5]  37.00-38.00  sec  2.64 GBytes  22.6 Gbits/sec  534   1.67 MBytes       
+[  5]  38.00-39.00  sec  5.27 GBytes  45.3 Gbits/sec  323   1.33 MBytes       
+[  5]  39.00-40.09  sec  4.25 GBytes  33.7 Gbits/sec   50   1.53 MBytes       
+[  5]  40.09-41.00  sec  3.75 GBytes  35.3 Gbits/sec    2   1.68 MBytes       
+[  5]  41.00-42.00  sec  4.90 GBytes  42.1 Gbits/sec  1034    984 KBytes       
+[  5]  42.00-43.00  sec  3.55 GBytes  30.5 Gbits/sec   20   1.23 MBytes       
+[  5]  43.00-44.00  sec  3.41 GBytes  29.3 Gbits/sec  771   1.48 MBytes       
+[  5]  44.00-45.00  sec  4.79 GBytes  41.2 Gbits/sec  862   1.15 MBytes       
+[  5]  45.00-46.00  sec  4.51 GBytes  38.7 Gbits/sec    2   1.30 MBytes       
+[  5]  46.00-47.00  sec  3.61 GBytes  31.0 Gbits/sec  649   1.22 MBytes       
+[  5]  47.00-48.00  sec  5.10 GBytes  43.8 Gbits/sec    2   1.32 MBytes       
+[  5]  48.00-49.00  sec  4.17 GBytes  35.8 Gbits/sec   46   1.58 MBytes       
+[  5]  49.00-50.00  sec  5.89 GBytes  50.6 Gbits/sec  351   1.58 MBytes       
+[  5]  50.00-51.00  sec  5.94 GBytes  51.1 Gbits/sec    0   1.59 MBytes       
+[  5]  51.00-52.01  sec  4.88 GBytes  41.6 Gbits/sec    0   1.59 MBytes       
+[  5]  52.01-53.00  sec  3.07 GBytes  26.6 Gbits/sec    1   1.65 MBytes       
+[  5]  53.00-54.00  sec  3.50 GBytes  30.1 Gbits/sec  136   1.68 MBytes       
+[  5]  54.00-55.00  sec  2.99 GBytes  25.7 Gbits/sec  884    949 KBytes       
+[  5]  55.00-56.00  sec  4.01 GBytes  34.5 Gbits/sec    0   1.14 MBytes       
+[  5]  56.00-57.00  sec  4.47 GBytes  38.4 Gbits/sec    2   1.40 MBytes       
+[  5]  57.00-58.00  sec  3.26 GBytes  28.0 Gbits/sec    3   1.53 MBytes       
+[  5]  58.00-59.00  sec  3.56 GBytes  30.6 Gbits/sec  584   1.57 MBytes       
+[  5]  59.00-60.00  sec  4.21 GBytes  36.1 Gbits/sec    3   1.67 MBytes       
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-60.00  sec   248 GBytes  35.4 Gbits/sec  17905             sender
+[  5]   0.00-60.03  sec   248 GBytes  35.4 Gbits/sec                  receiver
+
+iperf Done."

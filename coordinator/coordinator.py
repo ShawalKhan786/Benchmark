@@ -1,85 +1,57 @@
 import csv
-from flask import Flask, request
+from flask import Flask, request, render_template_string
 
 app = Flask(__name__)
 
 results = {
-    "cpu": {},
-    "memory": {},
-    "network": {}
+    "cpu": None,
+    "memory": None,
+    "network": None
 }
 
-@app.route('/upload/cpu', methods=['POST'])
-def upload_cpu_result():
-    # Assuming the POST data contains CPU load percentage
-    cpu_load = request.form.get('load')  # You should send 'load' in the POST request
-    core_used = request.form.get('core')  # Assuming core type is also sent
-    results['cpu'] = {
-        "CPU Load (%)": cpu_load,
-        "Memory Usage (MB)": '-',
-        "Network Throughput (Mbps)": '-',
-        "Intra-Container Latency (ms)": '-',
-        "Inter-Container Communication Latency (ms)": '-',
-        "Core Used": core_used,
-        "Duration (s)": 60
-    }
-    save_results_to_csv()
-    return "CPU result received", 200
+@app.route('/upload/<benchmark_type>', methods=['POST'])
+def upload_result(benchmark_type):
+    if benchmark_type in results:
+        # Store the result
+        results[benchmark_type] = request.data.decode('utf-8')
+        # Log the result to the console for debugging
+        print(f"Received result for {benchmark_type}: {results[benchmark_type]}")
+        # Save results to the CSV file
+        save_results_to_csv(results)
+        return "Result received", 200
+    return "Invalid benchmark type", 400
 
-@app.route('/upload/memory', methods=['POST'])
-def upload_memory_result():
-    # Assuming the POST data contains memory usage in MB
-    memory_usage = request.form.get('memory')  # You should send 'memory' in the POST request
-    core_used = request.form.get('core')  # Assuming core type is also sent
-    results['memory'] = {
-        "CPU Load (%)": '-',
-        "Memory Usage (MB)": memory_usage,
-        "Network Throughput (Mbps)": '-',
-        "Intra-Container Latency (ms)": '-',
-        "Inter-Container Communication Latency (ms)": '-',
-        "Core Used": core_used,
-        "Duration (s)": 60
-    }
-    save_results_to_csv()
-    return "Memory result received", 200
+@app.route('/results', methods=['GET'])
+def get_results():
+    # Render the results as an HTML page
+    return render_template_string('''
+        <h1>Benchmark Results</h1>
+        <table border="1">
+            <tr>
+                <th>Benchmark Type</th>
+                <th>Result</th>
+            </tr>
+            {% for key, value in results.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    ''', results=results)
 
-@app.route('/upload/network', methods=['POST'])
-def upload_network_result():
-    # Assuming the POST data contains network throughput and latency details
-    throughput = request.form.get('throughput')  # You should send 'throughput' in the POST request
-    intra_latency = request.form.get('intra_latency')  # You should send 'intra_latency' in the POST request
-    inter_latency = request.form.get('inter_latency')  # You should send 'inter_latency' in the POST request
-    core_used = request.form.get('core')  # Assuming core type is also sent
-    results['network'] = {
-        "CPU Load (%)": '-',
-        "Memory Usage (MB)": '-',
-        "Network Throughput (Mbps)": throughput,
-        "Intra-Container Latency (ms)": intra_latency,
-        "Inter-Container Communication Latency (ms)": inter_latency,
-        "Core Used": core_used,
-        "Duration (s)": 60
-    }
-    save_results_to_csv()
-    return "Network result received", 200
-
-def save_results_to_csv():
+def save_results_to_csv(results):
+    # Log the saving process for debugging
+    print("Saving results to CSV:")
+    for key, value in results.items():
+        print(f"{key}: {value}")
+    # Write the results to the CSV file
     with open('/results/benchmark_results.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
-        # Write the header
-        writer.writerow([
-            'Benchmark Type', 'CPU Load (%)', 'Memory Usage (MB)', 
-            'Network Throughput (Mbps)', 'Intra-Container Latency (ms)',
-            'Inter-Container Communication Latency (ms)', 'Core Used', 'Duration (s)'
-        ])
-        # Write CPU results
-        if results['cpu']:
-            writer.writerow(['CPU Benchmark'] + list(results['cpu'].values()))
-        # Write Memory results
-        if results['memory']:
-            writer.writerow(['Memory Benchmark'] + list(results['memory'].values()))
-        # Write Network results
-        if results['network']:
-            writer.writerow(['Network Benchmark'] + list(results['network'].values()))
+        writer.writerow(['Benchmark Type', 'Result'])
+        for key, value in results.items():
+            writer.writerow([key, value])
+    print("Results saved to /results/benchmark_results.csv")
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8080)
