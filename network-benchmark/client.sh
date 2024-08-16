@@ -5,6 +5,8 @@ SERVER_IP=${SERVER_IP:-"network-server"}
 DURATION=${DURATION:-60}
 COORDINATOR_URL="http://coordinator:8080/upload/network"
 
+# Append the duration to the result
+RESULT+="\nDuration: ${DURATION}s"
 # Run iperf3 in client mode
 RESULT=$(iperf3 -c $SERVER_IP -t $DURATION)
 

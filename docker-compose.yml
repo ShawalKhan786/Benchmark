@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   cpu-benchmark:
     build: ./cpu-benchmark

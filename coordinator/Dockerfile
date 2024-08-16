@@ -1,11 +1,10 @@
-# Coordinator Dockerfile
 FROM arm64v8/debian:bullseye-slim
 
 # Install Python and pip
 RUN apt-get update && apt-get install -y python3 python3-pip
 
-# Install Flask and Requests
-RUN pip3 install flask requests
+# Install Flask, Requests, and Pandas
+RUN pip3 install flask requests pandas
 
 # Copy the coordinator script
 COPY coordinator.py /coordinator.py

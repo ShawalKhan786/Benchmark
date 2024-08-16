@@ -7,6 +7,9 @@ DURATION=${DURATION:-60}
 # Run stress-ng with the specified or default load and duration, and capture the output
 RESULT=$(stress-ng --cpu $CPU_LOAD --timeout ${DURATION}s --metrics-brief 2>&1)
 
+# Append the duration to the result
+RESULT+="\nDuration: ${DURATION}s"
+
 # Save the result to a file (optional, for debugging or persistence)
 echo "$RESULT" | tee /result.txt
 
