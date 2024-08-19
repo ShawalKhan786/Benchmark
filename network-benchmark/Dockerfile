@@ -1,8 +1,8 @@
 # Network Benchmark Dockerfile
 FROM arm64v8/debian:bullseye-slim
 
-# Install iperf3 and curl for HTTP requests
-RUN apt-get update && apt-get install -y iperf3 curl
+# Install iperf3, curl, and ping (if not already installed)
+RUN apt-get update && apt-get install -y iperf3 curl iputils-ping
 
 # Copy the client and server scripts
 COPY client.sh /client.sh

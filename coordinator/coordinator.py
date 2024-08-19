@@ -54,25 +54,27 @@ def get_results():
             </tr>
             <tr>
                 <td>Memory Benchmark</td>
-                <td>{{ results.memory.usage }}</td>
-                <td>{{ results.cpu.duration }}</td>
-                <td></td>
                 <td>-</td>
-                <td>{{ results.cpu.time }}</td>
-                                  <td>-</td>
-                                  <td>-</td>
+                <td>{{ results.memory.memory_load }}</td>
+                <td>-</td>
+                <td>{{ results.memory.duration }}</td>
+                <td>{{ results.memory.time }}</td>
+                <td>-</td>
+                <td>-</td>
             </tr>
             <tr>
                 <td>Network Benchmark</td>
                 <td>-</td>
-                
+                <td>-</td>
                 <td>{{ results.network.throughput }}</td>
-                <td>{{ results.network.latency }}</td>
-                <td>{{ results.network.retransmissions }}</td>
-                                  <td>{{ results.cpu.duration }}</td>
-                                 
-                                   <td>-</td> 
-                                  <td>-</td>
+               
+                <td>{{ results.network.duration }}</td>
+                <td>{{ results.network.time }}s</td> 
+                <td>-</td>
+                                  
+                <td>{{ results.network.latency }} ms</td>
+                
+                                  
             </tr>
         </table>
     ''', results=results)
@@ -90,16 +92,23 @@ def parse_result(benchmark_type, result):
         parsed_data["time"] = next((line.split("completed in")[-1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
     elif benchmark_type == "memory":
-        parsed_data["usage"] = next((line.split(":")[-1].strip() for line in lines if "dispatching hogs" in line), "N/A")
-        parsed_data["time"] = next((line.split("in")[-1].strip() for line in lines if "successful run completed" in line), "N/A")
+        # Extract "Memory Load" value from the log
+        parsed_data["memory_load"] = next((line.split("Memory Load:")[-1].strip().split()[0][:-1] for line in lines if "Memory Load" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
-    
+        parsed_data["time"] = next((line.split("completed in")[-1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
     elif benchmark_type == "network":
-        parsed_data["throughput"] = next((line.split("sec")[-1].strip() for line in lines if "Gbits/sec" in line), "N/A")
-        parsed_data["latency"] = next((line.split("Interval")[1].strip() for line in lines if "Interval" in line), "N/A")
+        parsed_data["throughput"] = next(
+            (line.split()[6] + " " + line.split()[7] for line in lines if "sec" in line and ("Mbits/sec" in line or "Gbits/sec" in line)), 
+            "N/A"
+        )
+        parsed_data["latency"] = next(
+            (line.split("Extracted latency:")[-1].strip() for line in lines if "Extracted latency" in line),
+            "N/A"
+        )
         parsed_data["retransmissions"] = next((line.split("Retr")[1].strip() for line in lines if "Retr" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
-    
+        parsed_data["time"] = next((line.split()[2].split('-')[1] for line in lines if "sec" in line and "receiver" in line), "N/A")
+
     return parsed_data
 
 

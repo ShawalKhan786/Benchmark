@@ -43,6 +43,7 @@ services:
     environment:
       - SERVER_IP=network-server
       - DURATION=${NETWORK_DURATION}
+      - BANDWIDTH=${NETWORK_BandWidhth}
     depends_on:
       - network-server
       - coordinator  # Ensure the coordinator is up before starting
