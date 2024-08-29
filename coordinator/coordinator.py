@@ -49,7 +49,7 @@ def get_results():
                 <td>-</td>
                 <td>{{ results.cpu.duration }}</td>
                 <td>{{ results.cpu.time }}</td>
-                <td>-</td>
+                <td>{{ results.cpu.communication_time }} </td>
                 <td>-</td>
             </tr>
             <tr>
@@ -60,7 +60,7 @@ def get_results():
                 <td>{{ results.memory.duration }}</td>
                 <td>{{ results.memory.time }}</td>
                 <td>-</td>
-                <td>-</td>
+                <td>{{ results.memory.communication_time }}</td>
             </tr>
             <tr>
                 <td>Network Benchmark</td>
@@ -71,7 +71,7 @@ def get_results():
                 <td>{{ results.network.duration }}</td>
                 <td>{{ results.network.time }}s</td> 
                 <td>-</td>
-                                  
+                <td>{{ results.network.communication_time }}</td>                  
                 <td>{{ results.network.latency }} ms</td>
                 
                                   
@@ -90,12 +90,15 @@ def parse_result(benchmark_type, result):
         
         # Extract execution time (real time)
         parsed_data["time"] = next((line.split("completed in")[-1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
+        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time Between Containers" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
     elif benchmark_type == "memory":
         # Extract "Memory Load" value from the log
         parsed_data["memory_load"] = next((line.split("Memory Load:")[-1].strip().split()[0][:-1] for line in lines if "Memory Load" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
         parsed_data["time"] = next((line.split("completed in")[-1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
+        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time Memory Containers" in line), "N/A")
+        
     elif benchmark_type == "network":
         parsed_data["throughput"] = next(
             (line.split()[6] + " " + line.split()[7] for line in lines if "sec" in line and ("Mbits/sec" in line or "Gbits/sec" in line)), 
@@ -108,7 +111,7 @@ def parse_result(benchmark_type, result):
         parsed_data["retransmissions"] = next((line.split("Retr")[1].strip() for line in lines if "Retr" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
         parsed_data["time"] = next((line.split()[2].split('-')[1] for line in lines if "sec" in line and "receiver" in line), "N/A")
-
+        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time" in line), "N/A")
     return parsed_data
 
 

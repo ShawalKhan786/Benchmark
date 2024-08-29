@@ -39,12 +39,26 @@ RESULT="Latency: ${LATENCY} ms\niperf3 Results:\n$IPERF_RESULT\nDuration: ${DURA
 # Retry loop for sending results to the coordinator
 for i in {1..5}; do
     echo "Attempt $i to send results to the coordinator..."
+    
+    # Record the timestamp before sending the result
+    START_TIME=$(date +%s%N)
+    
+    # Send the results to the coordinator
     RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X POST -H "Content-Type: text/plain" --data-binary "$RESULT" $COORDINATOR_URL)
+    
+    # Record the timestamp after sending the result
+    END_TIME=$(date +%s%N)
+    
+    # Calculate the communication time in milliseconds
+    COMMUNICATION_TIME=$(( (END_TIME - START_TIME) / 1000000 ))
+    
     if [ "$RESPONSE" -eq 200 ]; then
         echo "Successfully sent results to coordinator."
+        echo "Communication Time: ${COMMUNICATION_TIME} ms"
         break
     else
         echo "Failed to send results. HTTP status code: $RESPONSE. Retrying in 5 seconds..."
+        echo "Communication Time: ${COMMUNICATION_TIME} ms"
         sleep 5
     fi
 done
