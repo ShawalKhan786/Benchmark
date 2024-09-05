@@ -1,6 +1,6 @@
 services:
   cpu-benchmark:
-    build: ./cpu-benchmark
+    image: shawalkhan786/cpu-benchmark:latest
     environment:
       - CPU_LOAD=${CPU_LOAD}
       - DURATION=${CPU_DURATION}
@@ -15,7 +15,7 @@ services:
       - benchmarking
 
   memory-benchmark:
-    build: ./memory-benchmark
+    image: shawalkhan786/memory-benchmark:latest
     environment:
       - MEMORY_LOAD=${MEMORY_LOAD}
       - DURATION=${MEMORY_DURATION}
@@ -30,7 +30,7 @@ services:
       - benchmarking
 
   network-server:
-    build: ./network-benchmark
+    image: shawalkhan786/network-benchmark:latest
     command: /server.sh
     ports:
       - "5201:5201"
@@ -38,7 +38,7 @@ services:
       - benchmarking
 
   network-client:
-    build: ./network-benchmark
+    image: shawalkhan786/network-benchmark:latest
     command: /client.sh
     environment:
       - SERVER_IP=network-server
@@ -51,7 +51,7 @@ services:
       - benchmarking
 
   coordinator:
-    build: ./coordinator
+    image: shawalkhan786/coordinator:latest
     ports:
       - "8080:8080"
     networks:
