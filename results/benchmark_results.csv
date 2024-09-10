@@ -1,4 +1,0 @@
-Benchmark Type,Load/Usage,Time,Operations/Throughput,Latency,Retransmissions
-CPU,50 cpu,", 2.82 secs)",stress-ng: info:  [8] stressor       bogo ops real time  usr time  sys time   bogo ops/s     bogo ops/s,-,-
-Memory,1 vm,", 0.31 secs)",-,-,-
-Network,-,-,141   4.43 MBytes,Transfer     Bitrate         Retr  Cwnd,Cwnd
