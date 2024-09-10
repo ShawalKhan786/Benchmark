@@ -9,6 +9,9 @@ This project aims to streamline and modularize benchmark testing for embedded sy
   - [Prerequisites](#prerequisites)
   - [Building and Running Containers](#building-and-running-containers)
   - [Managing Services](#managing-services)
+- [Benchmark Results](#benchmark-results)
+  - [Accessing Results via Browser](#accessing-results-via-browser)
+  - [Benchmark Table (in progress)](#benchmark-table-in-progress)
 
 ## Overview
 This project provides a modular approach to benchmarking embedded systems using Docker. It consists of four primary modules:
@@ -65,3 +68,10 @@ After setting up Docker Compose, verify that all services are running:
   You can view the logs of all services in real-time by running:  
    ```bash
    docker-compose logs -f
+   ```
+Benchmark results will also be available via the browser. Once the services are running, open your browser and go to:
+
+```bash
+http://127.0.0.1:8080/results
+```
+## Note: The table is still under development and more results will be added as the benchmarks complete.
