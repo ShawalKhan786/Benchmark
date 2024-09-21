@@ -27,7 +27,7 @@ def upload_result(benchmark_type):
 def get_results():
     # Render the results as an HTML page
     return render_template_string('''
-        <h1>Benchmark Resultsssss</h1>
+        <h1>Benchmark Results</h1>
         <table border="1">
             <tr>
                 <th>Benchmark Type</th>
