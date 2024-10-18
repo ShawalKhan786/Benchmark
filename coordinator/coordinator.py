@@ -1,8 +1,9 @@
 import csv
 from flask import Flask, request, render_template_string
 import pandas as pd
+import re
 app = Flask(__name__)
-
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 # Structured results with placeholders for different sections
 results = {
     "cpu": {"load": None, "time": None, "ops": None},
@@ -39,7 +40,7 @@ def get_results():
                 <th>Communication Time Between Containers (ms)</th>
                 <th>Memory Usage Over Time (Trend)</th>
                 <th>Latency (ms)</th>
-                <th>Notes</th>
+               
                                   
                     
             <tr>
@@ -50,17 +51,21 @@ def get_results():
                 <td>{{ results.cpu.duration }}</td>
                 <td>{{ results.cpu.time }}</td>
                 <td>{{ results.cpu.communication_time }} </td>
-                <td>-</td>
+                <td>N/A</td>
+                <td>N/A</td>
+                                                  
             </tr>
             <tr>
                 <td>Memory Benchmark</td>
                 <td>-</td>
-                <td>{{ results.memory.memory_load }}</td>
+                <td>{{ results.memory.memory_load }}MB</td>
                 <td>-</td>
                 <td>{{ results.memory.duration }}</td>
-                <td>{{ results.memory.time }}</td>
-                <td>-</td>
+                <td>{{ results.memory.mtime }}</td>
+                
                 <td>{{ results.memory.communication_time }}</td>
+                <td>-</td>                  
+                <td>N/A</td>                  
             </tr>
             <tr>
                 <td>Network Benchmark</td>
@@ -70,8 +75,9 @@ def get_results():
                
                 <td>{{ results.network.duration }}</td>
                 <td>{{ results.network.time }}s</td> 
-                <td>-</td>
-                <td>{{ results.network.communication_time }}</td>                  
+               
+                <td>{{ results.network.communication_time }}</td>    
+                                  <td>N/A</td>              
                 <td>{{ results.network.latency }} ms</td>
                 
                                   
@@ -89,29 +95,44 @@ def parse_result(benchmark_type, result):
         parsed_data["load"] = next((line.split(":")[-1].strip() for line in lines if "dispatching hogs" in line), "N/A")
         
         # Extract execution time (real time)
+        parsed_data["duration"] = next(
+            (line.split("Duration:")[1].strip().split()[0].replace('\n', '') for line in lines if "Duration:" in line),
+            "N/A"
+        )
+
         parsed_data["time"] = next((line.split("completed in")[-1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
         parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time Between Containers" in line), "N/A")
-        parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
+        
     elif benchmark_type == "memory":
         # Extract "Memory Load" value from the log
         parsed_data["memory_load"] = next((line.split("Memory Load:")[-1].strip().split()[0][:-1] for line in lines if "Memory Load" in line), "N/A")
-        parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
-        parsed_data["time"] = next((line.split("completed in")[-1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
-        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time Memory Containers" in line), "N/A")
+        parsed_data["duration"] = next(
+            (re.search(r'Duration:\s*(\d+s)', line).group(1) for line in lines if re.search(r'Duration:\s*(\d+s)', line)),
+            "N/A"
+        )
+        parsed_data["mtime"] = next((line.split("stress-ng: info:  [6] successful run completed in")[1].split()[0].strip() for line in lines if "successful run completed" in line), "N/A")
+        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time Between Containers" in line), "N/A")
+
         
     elif benchmark_type == "network":
         parsed_data["throughput"] = next(
             (line.split()[6] + " " + line.split()[7] for line in lines if "sec" in line and ("Mbits/sec" in line or "Gbits/sec" in line)), 
             "N/A"
         )
-        parsed_data["latency"] = next(
-            (line.split("Extracted latency:")[-1].strip() for line in lines if "Extracted latency" in line),
-            "N/A"
-        )
         parsed_data["retransmissions"] = next((line.split("Retr")[1].strip() for line in lines if "Retr" in line), "N/A")
         parsed_data["duration"] = next((line.split("Duration:")[-1].strip() for line in lines if "Duration:" in line), "N/A")
         parsed_data["time"] = next((line.split()[2].split('-')[1] for line in lines if "sec" in line and "receiver" in line), "N/A")
-        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time" in line), "N/A")
+        parsed_data["communication_time"] = next((line.split(":")[-1].strip() for line in lines if "Communication Time in:" in line), "N/A")
+        print("Looking for latency in lines:")
+        for line in lines:
+            if "Extracted latency" in line:
+                print(f"Latency line found: {line}")
+        
+        # Extract the latency value
+        parsed_data["latency"] = next(
+            (re.search(r"Extracted latency:\s*([\d.]+)", line).group(1) for line in lines if re.search(r"Extracted latency:\s*([\d.]+)", line)),
+            "N/A"
+        )
     return parsed_data
 
 

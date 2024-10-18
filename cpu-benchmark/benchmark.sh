@@ -8,7 +8,7 @@ DURATION=${DURATION:-60}
 RESULT=$(stress-ng --cpu $CPU_LOAD --timeout ${DURATION}s --metrics-brief 2>&1)
 
 # Append the duration to the result
-RESULT+="\nDuration: ${DURATION}s"
+RESULT+="Duration: ${DURATION}s"
 
 # Save the result to a file (optional, for debugging or persistence)
 echo "$RESULT" | tee /result.txt
@@ -27,7 +27,7 @@ END_TIME=$(date +%s%N)
 COMMUNICATION_TIME=$(( (END_TIME - START_TIME) / 1000000 ))
 
 # Append the communication time to the result
-RESULT+="\nCommunication Time Between Containers: ${COMMUNICATION_TIME} ms"
+RESULT+=" \nCommunication Time Between Containers: ${COMMUNICATION_TIME} ms"
 
 # Output the communication time
 echo "Communication Time Between Containers: ${COMMUNICATION_TIME} ms"
