@@ -27,7 +27,7 @@ done
 wait $STRESS_NG_PID
 
 # Append the memory load, duration, and memory usage over time to the result
-RESULT="Memory Load: ${MEMORY_LOAD} \nDuration: ${DURATION}s \nMemory Usage Over Time:${MEMORY_USAGE_OVER_TIME}"
+RESULT="Memory Load: ${MEMORY_LOAD}\nDuration: ${DURATION}s\nMemory Usage Over Time:${MEMORY_USAGE_OVER_TIME}"
 
 # Save the result to a file (optional, for debugging or persistence)
 echo "$RESULT" | tee /result.txt

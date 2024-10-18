@@ -54,7 +54,7 @@ for i in {1..5}; do
     
     if [ "$RESPONSE" -eq 200 ]; then
         echo "Successfully sent results to coordinator."
-        echo "Communication Time in: ${COMMUNICATION_TIME} ms"
+        echo "Communication Time: ${COMMUNICATION_TIME} ms"
         break
     else
         echo "Failed to send results. HTTP status code: $RESPONSE. Retrying in 5 seconds..."
